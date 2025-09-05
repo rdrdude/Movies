@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>File Encrypt/Decrypt Tool</title>
+    <style>
+        /* --- Body --- */
+        body {
+            background: radial-gradient(circle at top left, #0f0f0f, #121212);
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        /* --- Glass Container --- */
+        .container {
+            background: rgba(30,30,30,0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 0 40px rgba(58,134,255,0.4), 0 0 10px rgba(0,0,0,0.5);
+            padding: 40px 30px;
+            border-radius: 20px;
+            text-align: center;
+            width: 380px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+            .container.dragging {
+                transform: scale(1.07);
+                box-shadow: 0 0 60px rgba(58,134,255,0.7), 0 0 20px rgba(0,0,0,0.5);
+            }
+
+        /* --- Title --- */
+        h1 {
+            font-size: 28px;
+            margin-bottom: 28px;
+            color: #3a86ff;
+            text-shadow: 0 0 8px #3a86ff, 0 0 20px #3a86ff50;
+        }
+
+        input[type="file"] {
+            width: 100%;
+            padding: 10px 12px; /* slightly increase horizontal padding */
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border: none;
+            background-color: rgba(50,50,50,0.8);
+            color: #fff;
+            font-size: 16px;
+            line-height: 1.5; /* ensures proper vertical alignment */
+            box-sizing: border-box; /* include padding in width */
+            cursor: pointer;
+        }
+
+            /* Optional: hover effect */
+            input[type="file"]:hover {
+                box-shadow: 0 0 12px #3a86ff80;
+            }
+
+
+        /* --- Buttons --- */
+        button {
+            padding: 12px 26px;
+            margin: 10px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            background: linear-gradient(145deg,#3a86ff,#00ffff);
+            color: #fff;
+            text-shadow: 0 0 5px #fff;
+            box-shadow: 0 0 15px #3a86ff40, 0 0 5px #00ffff30;
+            transition: all 0.25s ease;
+        }
+
+            button:hover {
+                transform: scale(1.05);
+                box-shadow: 0 0 30px #3a86ff80, 0 0 15px #00ffff60;
+            }
+
+        /* --- Download Link --- */
+        a#downloadLink {
+            display: block;
+            margin-top: 20px;
+            color: #00ffff;
+            text-decoration: none;
+            font-weight: bold;
+            text-shadow: 0 0 8px #00ffff50;
+        }
+
+            a#downloadLink:hover {
+                text-shadow: 0 0 20px #00ffff;
+                text-decoration: underline;
+            }
+
+        /* --- Drop Overlay --- */
+        #dropOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(58, 134, 255, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 28px;
+            color: #fff;
+            font-weight: bold;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            transition: opacity 0.25s ease;
+            text-shadow: 0 0 12px #3a86ff;
+        }
+
+            #dropOverlay.active {
+                opacity: 1;
+                pointer-events: all;
+            }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>File Decrypterrrrr</h1>
+        <input type="file" id="fileInput">
+        <div>
+            <button id="decryptBtn">Decrypt</button>
+        </div>
+        <a id="downloadLink" style="display:none;">Download Result</a>
+    </div>
+
+    <div id="dropOverlay">Drop file here</div>
+
+    <script>
+        const password = "pBfeIP9cLeHyAyyAH7nr2Vw9jZMPi8XdrH231rnOXEtp3aDG";
+
+        async function getKey(password, salt) {
+            const enc = new TextEncoder();
+            const keyMaterial = await crypto.subtle.importKey(
+                "raw",
+                enc.encode(password),
+                { name: "PBKDF2" },
+                false,
+                ["deriveKey"]
+            );
+            return crypto.subtle.deriveKey(
+                {
+                    name: "PBKDF2",
+                    salt: salt,
+                    iterations: 100000,
+                    hash: "SHA-256"
+                },
+                keyMaterial,
+                { name: "AES-GCM", length: 256 },
+                false,
+                ["decrypt"]
+            );
+        }
+
+        function prepareDownload(blob, filename, text) {
+            const url = URL.createObjectURL(blob);
+            const link = document.getElementById('downloadLink');
+            link.href = url;
+            link.download = filename;
+            link.style.display = "block";
+            link.textContent = text;
+        }
+
+        document.getElementById('decryptBtn').onclick = async () => {
+            const file = document.getElementById('fileInput').files[0];
+            if (!file) return alert("Select a file first!");
+
+            const combined = new Uint8Array(await file.arrayBuffer());
+            const salt = combined.slice(0, 16);
+            const iv = combined.slice(16, 28);
+            const data = combined.slice(28);
+            const key = await getKey(password, salt);
+
+            try {
+                const decrypted = await crypto.subtle.decrypt({ name: "AES-GCM", iv }, key, data);
+                prepareDownload(new Blob([decrypted]), file.name.replace(/\.enc$/, ''), "Download Decrypted File");
+            } catch (e) {
+                alert("Decryption failed.");
+            }
+        };
+
+        const fileInput = document.getElementById('fileInput');
+        const dropOverlay = document.getElementById('dropOverlay');
+
+        window.addEventListener('dragenter', (e) => {
+            e.preventDefault();
+            if (e.dataTransfer.items && e.dataTransfer.items.length > 0) {
+                dropOverlay.classList.add('active');
+            }
+        });
+
+        window.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            if (e.clientX <= 0 || e.clientX >= window.innerWidth || e.clientY <= 0 || e.clientY >= window.innerHeight) {
+                dropOverlay.classList.remove('active');
+            }
+        });
+
+        window.addEventListener('dragover', (e) => e.preventDefault());
+
+        window.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropOverlay.classList.remove('active');
+
+            if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                fileInput.files = e.dataTransfer.files;
+            }
+        });
+
+    </script>
+</body>
+</html>
