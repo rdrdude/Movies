@@ -2,9 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>File Encrypt/Decrypt Tool</title>
+    <title>File Decrypter</title>
     <style>
-        /* --- Body --- */
         body {
             background: radial-gradient(circle at top left, #0f0f0f, #121212);
             color: #fff;
@@ -18,7 +17,6 @@
             user-select: none;
         }
 
-        /* --- Glass Container --- */
         .container {
             background: rgba(30,30,30,0.75);
             backdrop-filter: blur(12px);
@@ -31,12 +29,11 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-            .container.dragging {
-                transform: scale(1.07);
-                box-shadow: 0 0 60px rgba(58,134,255,0.7), 0 0 20px rgba(0,0,0,0.5);
-            }
+        .container.dragging {
+            transform: scale(1.07);
+            box-shadow: 0 0 60px rgba(58,134,255,0.7), 0 0 20px rgba(0,0,0,0.5);
+        }
 
-        /* --- Title --- */
         h1 {
             font-size: 28px;
             margin-bottom: 28px;
@@ -46,25 +43,22 @@
 
         input[type="file"] {
             width: 100%;
-            padding: 10px 12px; /* slightly increase horizontal padding */
+            padding: 10px 12px;
             margin-bottom: 20px;
             border-radius: 12px;
             border: none;
             background-color: rgba(50,50,50,0.8);
             color: #fff;
             font-size: 16px;
-            line-height: 1.5; /* ensures proper vertical alignment */
-            box-sizing: border-box; /* include padding in width */
+            line-height: 1.5;
+            box-sizing: border-box;
             cursor: pointer;
         }
 
-            /* Optional: hover effect */
-            input[type="file"]:hover {
-                box-shadow: 0 0 12px #3a86ff80;
-            }
+        input[type="file"]:hover {
+            box-shadow: 0 0 12px #3a86ff80;
+        }
 
-
-        /* --- Buttons --- */
         button {
             padding: 12px 26px;
             margin: 10px;
@@ -80,12 +74,11 @@
             transition: all 0.25s ease;
         }
 
-            button:hover {
-                transform: scale(1.05);
-                box-shadow: 0 0 30px #3a86ff80, 0 0 15px #00ffff60;
-            }
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px #3a86ff80, 0 0 15px #00ffff60;
+        }
 
-        /* --- Download Link --- */
         a#downloadLink {
             display: block;
             margin-top: 20px;
@@ -95,12 +88,11 @@
             text-shadow: 0 0 8px #00ffff50;
         }
 
-            a#downloadLink:hover {
-                text-shadow: 0 0 20px #00ffff;
-                text-decoration: underline;
-            }
+        a#downloadLink:hover {
+            text-shadow: 0 0 20px #00ffff;
+            text-decoration: underline;
+        }
 
-        /* --- Drop Overlay --- */
         #dropOverlay {
             position: fixed;
             top: 0;
@@ -123,15 +115,15 @@
             text-shadow: 0 0 12px #3a86ff;
         }
 
-            #dropOverlay.active {
-                opacity: 1;
-                pointer-events: all;
-            }
+        #dropOverlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>File Decrypterrrrr</h1>
+        <h1>File Decrypter</h1>
         <input type="file" id="fileInput">
         <div>
             <button id="decryptBtn">Decrypt</button>
@@ -139,9 +131,10 @@
         <a id="downloadLink" style="display:none;">Download Result</a>
     </div>
 
-    <div id="dropOverlay">Drop file here</div>
+    <div id="dropOverlay">Drop ".enc" file here</div>
 
     <script>
+        // Well done you're a hacker! Enjoy this ---> 🍪 🤡 (-_-)
         const password = "pBfeIP9cLeHyAyyAH7nr2Vw9jZMPi8XdrH231rnOXEtp3aDG";
 
         async function getKey(password, salt) {
