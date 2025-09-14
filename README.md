@@ -13,9 +13,9 @@ This project includes tools and resources related to my ripped movies and films.
 ##
 
 - **Fifty Shades Trilogy (metadata only)**
-  - Fifty Shades of Grey (placeholder link/metadata)
-  - Fifty Shades Darker (placeholder link/metadata)
-  - Fifty Shades Freed (placeholder link/metadata)
+  - [Fifty Shades of Grey](https://workupload.com/file/SqGcnh5C3MA)  
+  - [Fifty Shades Darker](https://workupload.com/file/X6xXzfrnUBY)  
+  - [Fifty Shades Freed](https://workupload.com/file/hBPnvrukqPW)
 
 
 ---
