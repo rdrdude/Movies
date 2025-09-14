@@ -10,7 +10,6 @@ This project includes tools and resources related to my ripped movies and films.
 
 ##  Repository Contents
 - `Decrypter.html` — A tool for decryption
-- More files and features coming soon!
 
 ---
 
